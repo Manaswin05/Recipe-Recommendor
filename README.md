@@ -6,4 +6,4 @@ The working here is html for fromtend and flask for the backend
 ### Why flask ?
 Flask is a light weight python backend framework ideal for developing simple projects
 -
-#### feel free to use it and if u have any improvements just raise a pr and give its details in the descrtion
+#### feel free to use it and if u have any improvements just raise a pr and give its details in the descrtion (you can improve the Readme file as well as well)
