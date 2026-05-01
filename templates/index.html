@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SavoryAI - AI-Powered Recipe Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #ffa502;
+            --dark: #2f3542;
+            --light: #f1f2f6;
+            --success: #2ed573;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff9f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 80px;
+            text-align: center;
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: #666;
+        }
+        
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 20px 30px;
+            border: none;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .search-box button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+        
+        .section-title p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        /* Recipe Results */
+        .recipe-results {
+            padding: 80px 0;
+            background: #f9f9f9;
+        }
+        
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .recipe-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .recipe-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .recipe-info {
+            padding: 20px;
+        }
+        
+        .recipe-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .view-recipe {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .view-recipe:hover {
+            background: var(--secondary);
+        }
+        
+        /* Recipe Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .recipe-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .recipe-header {
+            grid-column: 1 / -1;
+            margin-bottom: 20px;
+        }
+        
+        .recipe-header h2 {
+            margin-bottom: 10px;
+        }
+        
+        .ingredients ul {
+            list-style-type: none;
+        }
+        
+        .ingredients li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .ingredients li:before {
+            content: "•";
+            color: var(--primary);
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+        }
+        
+        .instructions ol {
+            list-style-type: none;
+            counter-reset: step-counter;
+        }
+        
+        .instructions li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 35px;
+        }
+        
+        .instructions li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--primary);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 107, 107, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step h3 {
+            margin-bottom: 15px;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            right: -50px;
+            width: 100px;
+            height: 2px;
+            background: var(--primary);
+            opacity: 0.3;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 20px;
+        }
+        
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .newsletter-form button {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 50px 50px 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            background: #1e272e;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .step:not(:last-child)::after {
+                display: none;
+            }
+            
+            .recipe-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .hero {
+                padding: 120px 0 60px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box input {
+                padding: 15px 20px;
+            }
+            
+            .search-box button {
+                padding: 12px 20px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                border-radius: 50px;
+                margin-bottom: 10px;
+            }
+            
+            .newsletter-form button {
+                border-radius: 50px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .feature-card, .recipe-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    RasoiAI
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#recipes">Recipes</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Culinary Creativity</h1>
+            <p>Discover personalized recipes tailored to your taste, dietary needs, and available ingredients with our advanced AI chef.</p>
+            <div class="search-box">
+                <input type="text" id="ingredients-input" placeholder="What ingredients do you have? (e.g., chicken, tomatoes, pasta)">
+                <button id="generate-btn" >Generate Recipe</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <h3>Generating delicious recipes...</h3>
+        <p>Our AI chef is working hard to create the perfect meal for you</p>
+    </div>
+
+    <!-- Recipe Results -->
+    <section class="recipe-results" id="recipes">
+        <div class="container">
+            <div class="section-title">
+                <h2>Your AI-Generated Recipes</h2>
+                <p>Fresh ideas created just for you based on your ingredients</p>
+            </div>
+            <div class="recipe-grid" id="recipe-grid">
+                <!-- Recipes will be inserted here by JavaScript -->
+                <div class="empty-state">
+                    <i class="fas fa-utensils" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3>No recipes yet</h3>
+                    <p>Enter some ingredients above and click "Generate Recipe" to get started</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Smart Cooking Features</h2>
+                <p>Our AI chef understands your preferences and creates perfect recipes every time</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Intelligent Suggestions</h3>
+                    <p>Get recipe recommendations based on your cooking history, preferences, and nutritional goals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Dietary Customization</h3>
+                    <p>All recipes adapt to your dietary restrictions - gluten-free, vegan, keto, and more.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Time Optimization</h3>
+                    <p>Recipes tailored to your available time, from 15-minute meals to weekend projects.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How RasoiAI Works</h2>
+                <p>Three simple steps to your perfect meal</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Tell Us What You Have</h3>
+                    <p>Enter the ingredients you have on hand or select from our visual ingredient picker.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Set Your Preferences</h3>
+                    <p>Choose dietary restrictions, cuisine type, cooking time, and skill level.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get AI-Generated Recipes</h3>
+                    <p>Receive multiple recipe options with step-by-step instructions and nutritional info.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <h2>Join Our Culinary Community</h2>
+            <p>Subscribe to receive weekly AI-curated recipes, cooking tips, and exclusive features.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SavoryAI</h3>
+                    <p>Revolutionizing home cooking with artificial intelligence and culinary expertise.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#recipes">Recipes</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> sripatnalam@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> 9529438131</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Pune, Maharastra</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; footer is to be added .</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Recipe Modal -->
+    <div class="modal" id="recipe-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="recipe-details" id="recipe-details">
+                <!-- Recipe details will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+        
+        // Recipe generation functionality
+        document.getElementById('generate-btn').addEventListener('click', generateRecipes);
+        document.getElementById('ingredients-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateRecipes();
+            }
+        });
+        
+        // Modal close button
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('recipe-modal').style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('recipe-modal')) {
+                document.getElementById('recipe-modal').style.display = 'none';
+            }
+        });
+        
+        // Generate recipes using API
+        function generateRecipes() {
+            const ingredients = document.getElementById('ingredients-input').value.trim();
+            console.log('Generate button clicked, ingredients:', ingredients);
+            
+            if (!ingredients) {
+                alert('Please enter some ingredients to generate recipes');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('recipe-grid').innerHTML = '';
+            console.log('Sending request to /get_recipe');
+            
+            // Call local Flask backend
+            fetch('/get_recipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ingredients: ingredients })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.error) {
+                    console.log('Error in response:', data.error);
+                    showError(data.error);
+                } else {
+                    console.log('Calling displayRecipes with', data.length, 'recipes');
+                    displayRecipes(data);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                document.getElementById('loading').style.display = 'none';
+                showError("Failed to fetch recipes. Please try again later.");
+            });
+        }
+        
+        // Display recipes in the grid
+        function displayRecipes(recipes) {
+            const recipeGrid = document.getElementById('recipe-grid');
+            
+            if (!recipes || recipes.length === 0) {
+                recipeGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3>No recipes found</h3>
+                        <p>Try different ingredients or check back later</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Clear any existing recipes
+            recipeGrid.innerHTML = '';
+            
+            // Add each recipe to the grid
+            recipes.forEach((recipe, index) => {
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe-card';
+                recipeCard.innerHTML = `
+                    <div class="recipe-image" style="background-image: url('${recipe.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'}')">
+                        ${!recipe.image ? '<i class="fas fa-utensils"></i>' : ''}
+                    </div>
+                    <div class="recipe-info">
+                        <h3>${recipe.title || 'Delicious Recipe'}</h3>
+                        <div class="recipe-meta">
+                            <span><i class="fas fa-clock"></i> ${recipe.time || 'N/A'}</span>
+                            <span><i class="fas fa-utensils"></i> ${recipe.cuisine || 'Various'}</span>
+                        </div>
+                        <a href="#" class="view-recipe" data-index="${index}">View Recipe</a>
+                    </div>
+                `;
+                
+                recipeGrid.appendChild(recipeCard);
+            });
+            
+            // Add event listeners to view recipe buttons
+            document.querySelectorAll('.view-recipe').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const index = this.getAttribute('data-index');
+                    showRecipeDetails(recipes[index]);
+                });
+            });
+            
+            // Scroll to recipes section
+            document.getElementById('recipes').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Show detailed recipe view in modal
+        function showRecipeDetails(recipe) {
+            const modalContent = document.getElementById('recipe-details');
+            
+            modalContent.innerHTML = `
+                <div class="recipe-header">
+                    <h2>${recipe.title || 'Delicious Recipe'}</h2>
+                    <div class="recipe-meta">
+                        <span><i class="fas fa-clock"></i> Prep Time: ${recipe.prepTime || 'N/A'}</span>
+                        <span><i class="fas fa-fire"></i> Cook Time: ${recipe.cookTime || 'N/A'}</span>
+                        <span><i class="fas fa-utensils"></i> Cuisine: ${recipe.cuisine || 'Various'}</span>
+                    </div>
+                </div>
+                <div class="ingredients">
+                    <h3>Ingredients</h3>
+                    <ul>
+                        ${recipe.ingredients ? recipe.ingredients.map(ing => `<li>${ing}</li>`).join('') : '<li>No ingredients listed</li>'}
+                    </ul>
+                </div>
+                <div class="instructions">
+                    <h3>Instructions</h3>
+                    <ol>
+                        ${recipe.instructions ? recipe.instructions.map(step => `<li>${step}</li>`).join('') : '<li>No instructions provided</li>'}
+                    </ol>
+                </div>
+                ${recipe.nutrition ? `
+                <div class="nutrition">
+                    <h3>Nutrition Information</h3>
+                    <p>Calories: ${recipe.nutrition.calories || 'N/A'}</p>
+                    <p>Protein: ${recipe.nutrition.protein || 'N/A'}</p>
+                    <p>Carbs: ${recipe.nutrition.carbs || 'N/A'}</p>
+                    <p>Fat: ${recipe.nutrition.fat || 'N/A'}</p>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('recipe-modal').style.display = 'block';
+        }
+        
+        // Show error message
+        function showError(message) {
+            const recipeGrid = document.getElementById('recipe-grid');
+            recipeGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 20px;"></i>
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        // Sample API response structure for testing (remove in production)
+        const sampleRecipes = [
+            {
+                title: "Scrambled Eggs with Herbs",
+                image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "10 mins",
+                cuisine: "American",
+                prepTime: "5 mins",
+                cookTime: "5 mins",
+                ingredients: [
+                    "4 large eggs",
+                    "1 tablespoon butter",
+                    "1 tablespoon chopped fresh herbs (chives, parsley)",
+                    "Salt and pepper to taste"
+                ],
+                instructions: [
+                    "Crack the eggs into a bowl and whisk them lightly with a fork.",
+                    "Melt the butter in a non-stick pan over medium heat.",
+                    "Pour in the eggs and let them sit for a few seconds.",
+                    "Gently stir the eggs with a spatula, folding them over as they cook.",
+                    "When the eggs are almost set but still slightly runny, remove from heat.",
+                    "Season with salt, pepper, and sprinkle with fresh herbs."
+                ],
+                nutrition: {
+                    calories: "220",
+                    protein: "14g",
+                    carbs: "1g",
+                    fat: "18g"
+                }
+            },
+            {
+                title: "Simple Fried Rice",
+                image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                time: "20 mins",
+                cuisine: "Asian",
+                prepTime: "10 mins",
+                cookTime: "10 mins",
+                ingredients: [
+                    "2 cups cooked rice (preferably day-old)",
+                    "2 tablespoons cooking oil",
+                    "2 eggs, beaten",
+                    "1/2 cup chopped vegetables (carrots, peas, etc.)",
+                    "1 tablespoon soy sauce",
+                    "1/2 teaspoon salt",
+                    "1/4 teaspoon pepper"
+                ],
+                instructions: [
+                    "Heat 1 tablespoon oil in a large pan or wok over medium-high heat.",
+                    "Add the beaten eggs and scramble until fully cooked. Remove and set aside.",
+                    "Add remaining oil to the pan and stir-fry the vegetables for 2-3 minutes.",
+                    "Add the rice and break up any clumps. Stir-fry for 3-4 minutes.",
+                    "Add the cooked eggs back to the pan along with soy sauce, salt, and pepper.",
+                    "Stir everything together and cook for another 2 minutes."
+                ]
+            }
+        ];
+        
+        // Uncomment for testing without API calls
+        // document.getElementById('generate-btn').addEventListener('click', function() {
+        //     displayRecipes(sampleRecipes);
+        // });
+    </script>
+</body>
+</html>
